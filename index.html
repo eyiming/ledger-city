@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>账本城 · 三章短篇电子书</title>
+<meta name="description" content="《账本城》三章连贯短篇：设定集、正文、索引与连续性校对表。课堂虚构作品。" />
+<style>
+  :root{
+    --ink:#1b211e;
+    --ink-soft:#3d443f;
+    --paper:#f6f1e6;
+    --paper-2:#efe7d7;
+    --line:#d9cfba;
+    --muted:#7b7a70;
+    --copper:#8a6740;
+    --green:#2f5d54;
+    --side:#202723;
+    --side-text:#d8d2c4;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Songti SC","SimSun","Noto Serif CJK SC","Source Han Serif SC",Georgia,serif;
+    font-size:17px;
+    line-height:1.95;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* ---------- 侧栏 ---------- */
+  aside{
+    width:268px;flex:0 0 268px;
+    background:var(--side);
+    color:var(--side-text);
+    padding:30px 22px 40px;
+    position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .brand{border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:16px;margin-bottom:18px;}
+  .brand h1{
+    font-size:22px;margin:0 0 6px;letter-spacing:.32em;
+    font-family:"Songti SC","SimSun",serif;color:#f2ebdc;font-weight:600;
+  }
+  .brand p{margin:0;font-size:12px;line-height:1.7;color:#9a9a8d;letter-spacing:.06em;}
+  nav ol{list-style:none;margin:0;padding:0;counter-reset:nav;}
+  nav li{counter-increment:nav;margin:2px 0;}
+  nav button{
+    display:block;width:100%;text-align:left;cursor:pointer;
+    background:none;border:0;color:var(--side-text);
+    font-family:inherit;font-size:14.5px;line-height:1.6;
+    padding:9px 10px 9px 12px;border-radius:3px;
+    border-left:2px solid transparent;transition:.16s;
+  }
+  nav button::before{
+    content:counter(nav,decimal-leading-zero);
+    font-size:11px;color:#7f8479;margin-right:9px;letter-spacing:.05em;
+  }
+  nav button:hover{background:rgba(255,255,255,.06);color:#fff;}
+  nav button.active{background:rgba(138,103,64,.22);border-left-color:var(--copper);color:#fff;}
+  .side-note{
+    margin-top:26px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);
+    font-size:11.5px;line-height:1.85;color:#8b8b7e;letter-spacing:.02em;
+  }
+
+  /* ---------- 主区 ---------- */
+  main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  header.topbar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(246,241,230,.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:12px clamp(18px,4vw,48px);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .search-box{position:relative;flex:1 1 280px;max-width:420px;}
+  .search-box input{
+    width:100%;padding:9px 34px 9px 34px;
+    border:1px solid var(--line);border-radius:999px;
+    background:#fbf7ee;color:var(--ink);
+    font-family:inherit;font-size:14px;letter-spacing:.04em;
+    outline:none;transition:.18s;
+  }
+  .search-box input:focus{border-color:var(--copper);box-shadow:0 0 0 3px rgba(138,103,64,.12);}
+  .search-box .ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);}
+  .search-box .clear{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    border:0;background:none;cursor:pointer;color:var(--muted);
+    font-size:15px;line-height:1;padding:4px;display:none;
+  }
+  .hint{font-size:12px;color:var(--muted);letter-spacing:.04em;}
+  .content{padding:clamp(26px,4vw,56px) clamp(20px,5vw,64px) 96px;}
+  .page{display:none;animation:fade .28s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .sheet{max-width:760px;margin:0 auto;}
+
+  /* ---------- 封面 ---------- */
+  .cover{max-width:820px;margin:0 auto;}
+  .cover-visual{
+    position:relative;border-radius:4px;overflow:hidden;
+    box-shadow:0 18px 44px rgba(28,33,30,.20);
+    background:linear-gradient(180deg,#c9d2d2 0%,#b7c2c2 34%,#8c9a99 34%,#7d8b8a 100%);
+    aspect-ratio:3/4;
+  }
+  .cover-visual img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cover-fallback{
+    position:absolute;inset:0;display:none;
+    background:linear-gradient(180deg,#cfd8d7 0%,#bfcac9 33%,#7f8d8c 33%,#6f7c7b 100%);
+  }
+  .cover-fallback::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:46%;
+    background:linear-gradient(180deg,#f3ead8,#e6dbc4);
+    clip-path:polygon(0 8%,50% 0,100% 8%,100% 100%,0 100%);
+  }
+  .cover-caption{
+    position:absolute;left:0;right:0;top:0;padding:9% 8% 0;text-align:center;z-index:3;
+  }
+  .cover-caption h2{
+    margin:0;font-size:clamp(30px,6vw,54px);letter-spacing:.42em;
+    color:#2b3330;font-weight:600;text-indent:.42em;
+    text-shadow:0 1px 0 rgba(255,255,255,.5);
+  }
+  .cover-caption .sub{
+    margin:.9em 0 0;font-size:clamp(11px,1.7vw,14px);letter-spacing:.36em;
+    color:#4a544f;text-indent:.36em;
+  }
+  .cover-caption .rule{
+    width:54px;height:1px;background:#66726c;margin:1.4em auto 0;opacity:.7;
+  }
+  .cover-meta{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--muted);letter-spacing:.08em;
+  }
+  .lede{max-width:820px;margin:30px auto 0;font-size:16px;color:var(--ink-soft);}
+  .lede p{margin:0 0 1em;}
+
+  /* ---------- 正文排版 ---------- */
+  .sheet h2{
+    font-size:24px;letter-spacing:.14em;font-weight:600;
+    margin:0 0 1.6em;padding-bottom:.6em;border-bottom:1px solid var(--line);
+    color:var(--ink);
+  }
+  .sheet h3{font-size:16px;letter-spacing:.1em;margin:2.2em 0 .8em;color:var(--green);font-weight:600;}
+  .sheet h3.stat{
+    font-size:14px;color:var(--copper);border-left:3px solid var(--copper);
+    padding-left:10px;letter-spacing:.12em;margin-top:2.4em;
+  }
+  .sheet p{margin:0 0 .9em;text-indent:0;letter-spacing:.02em;}
+  .sheet p.dlg{color:#243029;}
+  .sheet blockquote{
+    margin:1.4em 0;padding:.8em 1.1em;border-left:2px solid var(--line);
+    background:var(--paper-2);color:var(--ink-soft);font-size:15px;
+  }
+  .sheet blockquote p{margin:0;}
+  .sheet hr{border:0;height:1px;background:var(--line);margin:2.6em 0;position:relative;}
+  .sheet hr::after{
+    content:"· · ·";position:absolute;left:50%;top:-.95em;transform:translateX(-50%);
+    background:var(--paper);padding:0 .7em;color:#b3a992;font-size:12px;letter-spacing:.3em;
+  }
+  .sheet table{
+    width:100%;border-collapse:collapse;margin:1.2em 0 1.6em;font-size:14px;line-height:1.7;
+  }
+  .sheet td,.sheet th{
+    border:1px solid var(--line);padding:7px 10px;vertical-align:top;text-align:left;
+  }
+  .sheet tbody tr:first-child td{background:var(--paper-2);font-weight:600;letter-spacing:.04em;}
+  .sheet strong{font-weight:600;color:var(--green);}
+  .sheet mark{background:#f6de9a;color:inherit;padding:0 2px;border-radius:2px;}
+  .chapter-end{font-size:12px;color:var(--muted);letter-spacing:.12em;margin-top:2.4em;}
+
+  footer.page-foot{
+    max-width:760px;margin:64px auto 0;padding-top:18px;border-top:1px solid var(--line);
+    font-size:12px;line-height:1.9;color:var(--muted);letter-spacing:.05em;
+  }
+
+  @media (max-width:860px){
+    .app{flex-direction:column;}
+    aside{width:auto;flex:none;height:auto;position:static;padding:20px 18px;}
+    .brand h1{font-size:19px;}
+    nav ol{display:flex;flex-wrap:wrap;gap:4px;}
+    nav li{margin:0;}
+    nav button{width:auto;padding:7px 10px;font-size:13px;border-left:0;border-bottom:2px solid transparent;}
+    nav button.active{border-left:0;border-bottom-color:var(--copper);}
+    .side-note{display:none;}
+    body{font-size:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <h1>账本城</h1>
+      <p>三章连贯短篇 · 设定集 · 索引<br/>课堂虚构作品 / 第 2 课制作包</p>
+    </div>
+    <nav>
+      <ol>
+        <li><button data-target="cover" class="active">封面与简介</button></li>
+        <li><button data-target="ch1">第一章 · 空的一格</button></li>
+        <li><button data-target="ch2">第二章 · 抄写员的一页</button></li>
+        <li><button data-target="ch3">第三章 · 钟响</button></li>
+        <li><button data-target="setting">世界观设定集</button></li>
+        <li><button data-target="appendix">设定附录 · 索引</button></li>
+      </ol>
+    </nav>
+    <div class="side-note">
+      顶部检索框输入人物、地点、道具或术语名称，界面会跳到附录对应条目并高亮。<br/><br/>
+      素材为课堂虚构数据；正文与设定集同源，差异以设定集为准。
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div class="search-box">
+        <span class="ico">⌕</span>
+        <input id="idxSearch" type="search" placeholder="检索索引：铜尺 / 寄存处 / 抄写 / 小满…" autocomplete="off" />
+        <button class="clear" id="clearBtn" title="清空">✕</button>
+      </div>
+      <span class="hint">共 3 章 · 22 条索引条目 · 9 个场景</span>
+    </header>
+
+    <div class="content">
+      <section class="page active" id="cover">
+        <div class="cover">
+          <div class="cover-visual">
+            <img src="10_封面.png" alt="《账本城》封面插画：旧账册、静止的钟摆与三条街的轮廓"
+                 onerror="this.style.display='none';document.getElementById('coverFallback').style.display='block';" />
+            <div class="cover-fallback" id="coverFallback"></div>
+            <div class="cover-caption">
+              <h2>账本城</h2>
+              <p class="sub">三章短篇 · 课堂虚构</p>
+              <div class="rule"></div>
+            </div>
+          </div>
+          <div class="cover-meta">
+            <span>题材：架空校园城 / 规则悬疑</span>
+            <span>全三章 · 每章 800 字以上</span>
+            <span>POV：第三人称限制</span>
+          </div>
+        </div>
+        <div class="lede">
+          <p>账本城的人不用别的东西交换，只写条目：每写下一条，必须划掉另一条。每天只能写一条。写第二条，第一条就会消失。</p>
+          <p>周一清晨，东街记录员沈砚发现昨天最后一格空了。纸角只剩半个「桉」字。</p>
+          <p>三天之后，旧钟楼的钟响了一声。它只在有人做出不可撤回的选择时响。</p>
+        </div>
+      </section>
+
+      <section class="page" id="ch1">
+<h2>第一章 · 空的一格</h2>
+<p>周一清晨，东街的长桌刚擦过，木纹里还留着水痕。沈砚把新的一页铺平，掏出铜尺，压在纸角上。</p>
+<p>昨天的最后一格是空的。</p>
+<p>他记得那一格本该有条目。不是忘了写，是写上去又不见了。纸面很平，没有划痕，没有墨。</p>
+<p class="dlg">「今天只能写一条。」他对自己说。</p>
+<p>长桌另一头有人把笔放下。笔杆碰到桌面，声音很轻，顺着水痕滑到尽头。</p>
+<p>桌子从上往下坐了十几个人，袖子都卷到肘上。有人写完了，正用手指把墨吹干。吹干之后，那一格就算落定。</p>
+<p>沈砚把铜尺挪开一寸。纸角翘起来，露出下面压着的一小片旧纸。边缘毛糙，是从别的账册上撕下来的。</p>
+<p>上面只剩半个字。</p>
+<p class="dlg">「桉。」</p>
+<p>他把那片纸捏起来，对着窗口的光看。木字旁被撕走了，只剩下半个「安」。</p>
+<p>他读了三种读法，都读不出第二个字。</p>
+<p>对面的人抬起头。</p>
+<p class="dlg">「沈记录员，今天还换页吗？」</p>
+<p class="dlg">「换。」他把铜尺压回原处，「先让我把这一条写完。」</p>
+<p>他写完最后一笔，才把旧纸折了两折，放进袖口。</p>
+<p>钟楼那边没有声音。这个时辰也不该有声音。</p>
+<p>走到钟楼街，影子从钟座底下伸出来，比昨天长。钟叔在楼下擦钟，手套裹着抹布，一下，一下，擦得很慢。</p>
+<p>钟座下面摆着一张小凳。凳面上有一圈磨白的印子，是手套擦出来的。</p>
+<p class="dlg">「钟叔。」</p>
+<p class="dlg">「嗯。」</p>
+<p class="dlg">「钟停多久了？」</p>
+<p class="dlg">「从上一页开始。」钟叔没抬头。</p>
+<p class="dlg">「停的原因呢？」</p>
+<p class="dlg">「你要问原因，我给不了。你要问时间，周五傍晚。」</p>
+<p>沈砚抬头看钟面。指针停在一个位置上，正是傍晚的刻度。</p>
+<p class="dlg">「周五傍晚。」</p>
+<p class="dlg">「周五傍晚。」钟叔把抹布叠成小方块，「你还有事。」</p>
+<p class="dlg">「昨天的最后一格空了。」</p>
+<p>手套停了半拍。</p>
+<p class="dlg">「格子会空。」钟叔说，「人也会。」</p>
+<p>他没有再问。走过钟楼街的尽头，纸街的墙上是层层旧纸，风一过就响。纸街的桌子都是矮的，人要坐着写，写完再把纸举起来对光。</p>
+<p>阿桉坐在最里面那张矮桌前，浅色围裙，手指上有纸痕。</p>
+<p class="dlg">「抄写员。」</p>
+<p class="dlg">「记录员。」她抬起头，说得慢，「东街的账册，一天只换一次页。」</p>
+<p class="dlg">「昨天有人动过我的账册。」</p>
+<p class="dlg">「动过。」她把手里的笔尖在纸上点了两下，「动过，不等于我抄的是你的。」</p>
+<p class="dlg">「那你抄的是谁的？」</p>
+<p class="dlg">「这个不能说。」她把笔帽盖上，「说了，就等于承认我动过别人的账册。」</p>
+<p>沈砚把袖口里的旧纸取出来，放在桌上。</p>
+<p>阿桉看了一眼，手指停住。她没有伸手，围裙口袋却鼓着一小块，露出的纸边毛糙，撕口不平。</p>
+<p class="dlg">「这纸是从哪本账册上撕下来的？」</p>
+<p class="dlg">「不知道。」</p>
+<p class="dlg">「你口袋里那张，边是新的。」</p>
+<p>阿桉低下头，把桌角的裁纸刀挪了挪。</p>
+<p class="dlg">「周一傍晚了。」她站起来，「纸街要收摊。」</p>
+<p>沈砚没有拦她。他把旧纸收回袖口，铜尺压在掌心，凉的。</p>
+<p>走出纸街，他回头看了一眼。阿桉站在桌边，手按在围裙口袋上，没有动。</p>
+<h3 class="stat">本章状态登记表</h3>
+<table><tbody>
+<tr><td>人物</td><td>章末位置</td><td>随身道具</td><td>时间点</td></tr>
+<tr><td>沈砚</td><td>纸街矮桌前</td><td>铜尺（袖口）、半字旧纸（袖口）</td><td>周一傍晚</td></tr>
+<tr><td>阿桉</td><td>纸街，起身收摊</td><td>纸角（围裙口袋）、账册</td><td>周一傍晚</td></tr>
+<tr><td>钟叔</td><td>旧钟楼楼下</td><td>手套（湿）</td><td>周一下午</td></tr>
+<tr><td>小满</td><td>未出场（寄存处）</td><td>布包</td><td>周一</td></tr>
+</tbody></table>
+<p>字数：843 字（不含标点；含标点 1042 字符）。</p>
+<hr/>
+</section>
+<section class="page" id="ch2">
+<h2>第二章 · 抄写员的一页</h2>
+<p>周四上午，纸街的门板一块块卸下来，靠墙立着，像一排没写完的字。沈砚从东街过来，袖口里只有铜尺。</p>
+<p>阿桉坐在最里面那张矮桌前。他往纸街深处走，在她桌前停下。</p>
+<p class="dlg">「昨天的最后一格，是你抄走的。」</p>
+<p>阿桉把笔尖在砚台边磕了两下。</p>
+<p class="dlg">「是我。」她说，「纸角上有半个字。你留着。」</p>
+<p>沈砚把旧纸放在桌上。阿桉从围裙口袋里取出一张，两张拼在一起，缺口吻合。</p>
+<p>两张纸的边不一样，一张是横着撕的，一张是竖着撕的。沈砚把两张各转了一次，缺口就合上了。</p>
+<p>半个字补成了三个字：「请阿桉」。</p>
+<p class="dlg">「后面还有。」</p>
+<p>她把账册推过来。那一页上有一条被划掉的线，墨很旧，划痕压着原来的字。</p>
+<p class="dlg">「昨天那条是谁写的。」</p>
+<p class="dlg">「不是我写的，是你写的。」她说，「写的是『周四傍晚去寄存处，让小满开门』。」</p>
+<p>沈砚看着那条线。周四傍晚，门是锁的。这条写下去，第二天就会有人去敲那扇门。</p>
+<p class="dlg">「所以你抄走了。」</p>
+<p class="dlg">「抄走了。」她把账册合上，「在别人的账册里重抄，只准一次。抄完，你那一格就空了。」</p>
+<p class="dlg">「为什么不告诉我。」</p>
+<p class="dlg">「说了，就等于认下我动过别人的账册。」她把笔插回笔套，「纸街的抄写员动了别人的账册，第二天就没有桌子。」</p>
+<p>沈砚没有说话。街上有人推着木架经过，纸页在风里翻。</p>
+<p class="dlg">「那一条现在在哪儿。」</p>
+<p class="dlg">「在木匣里。」阿桉说，「周五傍晚，寄存处开门。」</p>
+<hr/>
+<p>周四傍晚，寄存处的木门锁着，队伍从门口排到街角。</p>
+<p>队伍里的人手里都攥着一张小纸，没有人说话。纸角在风里轻轻抖。</p>
+<p>沈砚从队伍外侧走过去，在门边看见小满。短发，布包抱在胸前，低着头。</p>
+<p class="dlg">「小满。」</p>
+<p class="dlg">「那个，」她抬起眼，「今天不开。」</p>
+<p class="dlg">「门锁着。」</p>
+<p class="dlg">「锁着，也不开。」她把布包抱紧了些，「周五傍晚才开。队伍是来站位置的。」</p>
+<p>沈砚伸手碰了一下门板。木头比街面凉。</p>
+<p class="dlg">「名单在哪儿。」</p>
+<p>小满犹豫了一下，把手里的纸折了折，递过来一半。</p>
+<p>名单上是一列名字。第四个是他的。</p>
+<p class="dlg">「我的名字怎么在名单上。」</p>
+<p class="dlg">「那个……」她把纸抽回去，「名单是上周就写好的。」</p>
+<p class="dlg">「谁写的。」</p>
+<p class="dlg">「我不知道。我只管开门。」</p>
+<p>门缝里的风把她的短发吹起来一点。她把布包换到另一只手上，退回门边。</p>
+<hr/>
+<p>东街只剩一盏灯。沈砚把账册摊在长桌上，铜尺压住页角。</p>
+<p>今天早上他写过一条，写的是「问清阿桉」。这一条还在。</p>
+<p>他又写了一条：「去问小满，名册上为什么有我的名字。」</p>
+<p>第二笔落下去的时候，纸面动了一下。上面那一行淡下去，像被水浸过，最后只剩一格空白。</p>
+<p>明天木匣要等寄存处开门才取得到。</p>
+<p>沈砚看着那一格空白，把铜尺挪开。他没有再写。</p>
+<p>长桌的木头在灯下泛黄。铜尺的影子压在空白那一格上，正好盖住一行字的宽度。</p>
+<h3 class="stat">本章状态登记表</h3>
+<table><tbody>
+<tr><td>人物</td><td>章末位置</td><td>随身道具</td><td>时间点</td></tr>
+<tr><td>沈砚</td><td>东街长桌</td><td>铜尺（手边）、半字旧纸（袖口）</td><td>周四夜</td></tr>
+<tr><td>阿桉</td><td>纸街收摊后回桌</td><td>纸角已交出、账册</td><td>周四上午</td></tr>
+<tr><td>钟叔</td><td>旧钟楼（未出场）</td><td>手套</td><td>周四</td></tr>
+<tr><td>小满</td><td>寄存处门边</td><td>布包、名单</td><td>周四傍晚</td></tr>
+</tbody></table>
+<p>字数：838 字（不含标点；含标点 1034 字符）。</p>
+<hr/>
+</section>
+<section class="page" id="ch3">
+<h2>第三章 · 钟响</h2>
+<p>周五傍晚，沈砚站在寄存处门口。</p>
+<p>木门开了一半。小满在门里搬一只木匣，匣子上有一道旧划痕，和他账册上见过的划痕一样深。</p>
+<p class="dlg">「进来。」她说，「今天是周五。」</p>
+<p>沈砚看了一眼街口。队伍散了，钟楼街的影子正好落在门槛上。</p>
+<p>木匣放在矮桌上。小满打开盖子，里面只有一张纸，纸边缺了一角。</p>
+<p>匣子里有一股旧纸的味道，不重，像放了很多年的柜子打开时的那一下。</p>
+<p class="dlg">「这是抄下来的。」她说，「抄写员抄的，抄在别人的账册里，只准一次。」</p>
+<p>沈砚把袖口里的旧纸取出来，对着那张纸的缺口按上去。</p>
+<p>缺口吻合。上面写着：「请阿桉把寄存处名册交给小满。」</p>
+<p>他认得自己的字。末笔收得很急，是一年前的他。</p>
+<p class="dlg">「名册上有谁。」</p>
+<p class="dlg">「有我。」小满低着头，「也有你。」</p>
+<p class="dlg">「我的名字为什么在名册上。」</p>
+<p class="dlg">「因为你要把它交出去。」她的手指按在匣沿上，「名册交了，我就走不了。」</p>
+<p>沈砚把纸放回匣里。</p>
+<p class="dlg">「一年前我划过这一条。」</p>
+<p class="dlg">「划了。」小满说，「划掉的不能在自己账册里恢复。」</p>
+<p class="dlg">「所以我忘了。」</p>
+<p class="dlg">「忘了，纸还在。」</p>
+<hr/>
+<p>纸街的灯已经点起来。灯挂得低，灯芯烧出一小段黑。阿桉把两张纸摆在矮桌上，一张缺角，一张带角。</p>
+<p class="dlg">「可以抄回去。」她说，「在别人的账册里重抄一次，只准一次。抄回去，你就想起来了。」</p>
+<p class="dlg">「想起来了，名册就还在。」</p>
+<p class="dlg">「在。」她把笔帽取下，「名字在名册上，人就出不了门。」</p>
+<p>沈砚看着那支笔。</p>
+<p class="dlg">「不抄。」</p>
+<p>阿桉的手停在半空。</p>
+<p class="dlg">「记录员。」</p>
+<p class="dlg">「不抄。」他把铜尺压在账册上，写下今天的这一条：「名册作废。」</p>
+<p>写完，他把账册推到桌子中间，让阿桉看清。</p>
+<p>阿桉看了很久，把笔帽盖回去。</p>
+<p class="dlg">「这条划不掉了。」</p>
+<p class="dlg">「不划。」</p>
+<p>一个穿灰衣的人在纸街尽头看着他们。</p>
+<hr/>
+<p>钟楼街很静。沈砚走到钟座底下，抬头。</p>
+<p>钟响了。</p>
+<p>一声，木头的、闷的，顺着长影滚到街口。</p>
+<p>钟叔站在楼梯口，抬头看钟，没有动。</p>
+<p class="dlg">「响了。」沈砚说。</p>
+<p class="dlg">「响了。」钟叔抬起手，把右手的手套一根手指一根手指地摘下来。</p>
+<p>手套下面是一块铜楔，边缘磨得发亮。他把铜楔从钟摆的卡口里抽出来。</p>
+<p>钟摆动了半寸，停在离傍晚刻度更近的地方。</p>
+<p>街面上没有人。指针没有再动。</p>
+<p class="dlg">「你停的。」</p>
+<p class="dlg">「我停的。」钟叔把铜楔放进外套口袋，「去年有人在这里划掉一条，划完就站在楼下，站到天亮。」</p>
+<p class="dlg">「那个人是我。」</p>
+<p class="dlg">「是你。」钟叔看着钟面，「划掉的东西不能在自己账册里恢复。这一条，我替你记住时间。」</p>
+<p>沈砚把袖口里的旧纸取出来，摊在掌心。半个字还是半个字，只是现在他知道后面是什么了。</p>
+<p class="dlg">「名册作废了。」</p>
+<p>钟叔点了一下头。</p>
+<p class="dlg">「钟只响一次。」他说，「响过，就不能撤回。」</p>
+<p>街口有人走过来。小满背着布包，脚步很轻，站在钟楼街的影子里。</p>
+<p class="dlg">「那个，」她抬起头，「门我锁上了。」</p>
+<p>沈砚把铜尺收回袖口。</p>
+<p class="dlg">「锁上就别回头。」</p>
+<h3 class="stat">本章状态登记表</h3>
+<table><tbody>
+<tr><td>人物</td><td>章末位置</td><td>随身道具</td><td>时间点</td></tr>
+<tr><td>沈砚</td><td>钟楼街钟座下</td><td>铜尺（袖口）、半字旧纸（掌心）</td><td>周五夜</td></tr>
+<tr><td>阿桉</td><td>纸街矮桌</td><td>两张拼合的纸、账册</td><td>周五夜</td></tr>
+<tr><td>钟叔</td><td>旧钟楼楼梯口</td><td>手套（摘下）、铜楔</td><td>周五夜</td></tr>
+<tr><td>小满</td><td>钟楼街街口</td><td>布包（背着）、寄存处钥匙</td><td>周五夜</td></tr>
+</tbody></table>
+<p>字数：853 字（不含标点；含标点 1079 字符）。</p>
+</section>
+
+
+      <section class="page" id="setting">
+<h1>01_世界观设定集 ·《账本城》</h1>
+<blockquote>来源：`素材/第2课_AI小说创作/01_世界观设定包.md`。</blockquote>
+<blockquote>本设定集只做整理与编号，不新增任何规则；设定包未写明的信息一律标注「待补充」。</blockquote>
+<blockquote>步骤 2 · 能力编号 `WB-FILE`</blockquote>
+<h2>一、硬设定清单（H1—H5）</h2>
+<table><tbody>
+<tr><td>编号</td><td>规则原文</td><td>检查方法（正文中如何判定未违反）</td></tr>
+<tr><td>H1</td><td>任何人每天只能在公共账册上写一条新条目，写第二条时第一条会自动消失。</td><td>每章统计同一人物当日新写条目的次数：同一日出现第二次书写，其后必须出现「先前那条不见了／那一格空了」的可见后果，否则判违反。</td></tr>
+<tr><td>H2</td><td>寄存处只在周五傍晚开放，其余时间门是锁着的，任何人都不能进入。</td><td>逐场核对寄存处出现的时间词：非「周五傍晚」的场次里，门必须处于锁闭状态，且不得有人进出或递出物品。</td></tr>
+<tr><td>H3</td><td>旧钟楼的钟只在有人做出「不可撤回的选择」时敲响，其他时候永远静止。</td><td>每次钟响必须前接一次不可撤回的选择动作（划掉、交出、拒绝抄回等），且该选择在后续章节不得被撤销；无选择而响即判违反。</td></tr>
+<tr><td>H4</td><td>划掉的条目无法恢复，但可以在别人的账册里被重新抄写一次。</td><td>核对恢复动作的执行者与账册归属：本人账册内不得恢复已划条目；他人抄写限一次，同一编号伏笔只能被抄写一次。</td></tr>
+<tr><td>H5</td><td>城中不允许出现「购买」「付款」「价格」这类与货币有关的说法。</td><td>全文检索「钱、买、卖、付、价、元、币、账目金额」等词族，任何一处出现即判违反。</td></tr>
+</tbody></table>
+<h2>二、地理与场所表</h2>
+<table><tbody>
+<tr><td>场所</td><td>特征（来自设定包）</td></tr>
+<tr><td>东街</td><td>长桌连成一排，人们在这里写条目</td></tr>
+<tr><td>纸街</td><td>抄写员聚集，墙上是层层旧纸</td></tr>
+<tr><td>钟楼街</td><td>安静，地面有钟摆投下的长影</td></tr>
+<tr><td>寄存处</td><td>木门、小窗、只在周五开放</td></tr>
+<tr><td>旧钟楼</td><td>指针停在某个位置，无人知道是谁停的</td></tr>
+<tr><td>公共账册</td><td>城中居民每日填写条目的账册，周一换新页（时间线）</td></tr>
+<tr><td>寄存处内部陈设</td><td>待补充</td></tr>
+<tr><td>账册纸张材质与页数</td><td>待补充</td></tr>
+</tbody></table>
+<h2>三、时间线表（6 个时间点）</h2>
+<table><tbody>
+<tr><td>时间点</td><td>事件</td></tr>
+<tr><td>周一清晨</td><td>公共账册换上新的一页</td></tr>
+<tr><td>周二下午</td><td>纸街的抄写员开始整理上周条目</td></tr>
+<tr><td>周三上午</td><td>钟楼无故被擦拭一遍，但钟没有响</td></tr>
+<tr><td>周四傍晚</td><td>寄存处门口第一次出现排队的人</td></tr>
+<tr><td>周五傍晚</td><td>寄存处开放，钟楼敲响一次</td></tr>
+<tr><td>周六清晨</td><td>公共账册被收进档案柜</td></tr>
+</tbody></table>
+<p>补充说明：周五之后到下一个周一清晨之间，公共账册不换页；本段区间内发生的事记在「上周条目」末尾（由「周六清晨收进档案柜」推得，属时间线的最小推论，不含新规则）。</p>
+<h2>四、本世界不可能发生的事（负面约束 3 条）</h2>
+<p>1. 任何人用钱买东西或讨论价格。</p>
+<p>2. 任何人把已经划掉的条目在自己账册里恢复。</p>
+<p>3. 钟在没有「不可撤回的选择」时自己敲响。</p>
+<blockquote>三章正文逐场比对以上 3 条，任一条被触碰即判错，须改稿。</blockquote>
+</section>
+
+
+      <section class="page" id="appendix">
+<h1>09_设定附录</h1>
+<blockquote>本附录由 `06_正文_三章.md` 修订稿抽取，共 22 条，只收录正文中真实出现的名称。</blockquote>
+<blockquote>与 `01_世界观设定集.md` 若有差异，一律以设定集为准。抽取工具：`WB-FILE`。</blockquote>
+<h2>一、人物（4）</h2>
+<table><tbody>
+<tr><td>名称</td><td>首见章</td><td>释义</td><td>关联条目</td></tr>
+<tr><td>沈砚</td><td>第 1 章</td><td>东街记录员，负责给公共账册换页</td><td>铜尺、东街、账册</td></tr>
+<tr><td>阿桉</td><td>第 1 章</td><td>纸街抄写员，能重抄被划掉的条目</td><td>纸街、纸角、抄写</td></tr>
+<tr><td>钟叔</td><td>第 1 章</td><td>旧钟楼看守，从不解释钟为什么停</td><td>旧钟楼、手套、铜楔</td></tr>
+<tr><td>小满</td><td>第 2 章</td><td>寄存处学徒，只在周五出现</td><td>寄存处、木匣、布包</td></tr>
+</tbody></table>
+<h2>二、地点（5）</h2>
+<table><tbody>
+<tr><td>名称</td><td>首见章</td><td>释义</td><td>关联条目</td></tr>
+<tr><td>东街</td><td>第 1 章</td><td>长桌连成一排，人们在此写条目</td><td>沈砚、账册</td></tr>
+<tr><td>钟楼街</td><td>第 1 章</td><td>安静的街，地面有钟摆投下的长影</td><td>旧钟楼、钟叔</td></tr>
+<tr><td>纸街</td><td>第 1 章</td><td>抄写员聚集处，墙上是层层旧纸</td><td>阿桉、抄写</td></tr>
+<tr><td>寄存处</td><td>第 2 章</td><td>木门小窗，只在周五傍晚开放</td><td>小满、木匣、名册</td></tr>
+<tr><td>旧钟楼</td><td>第 1 章</td><td>指针停在傍晚刻度，钟只响一次</td><td>钟叔、铜楔</td></tr>
+</tbody></table>
+<h2>三、道具（9）</h2>
+<table><tbody>
+<tr><td>名称</td><td>首见章</td><td>释义</td><td>关联条目</td></tr>
+<tr><td>铜尺</td><td>第 1 章</td><td>沈砚压纸的工具，随身不离</td><td>沈砚、账册</td></tr>
+<tr><td>半字旧纸</td><td>第 1 章</td><td>只剩半个「桉」字的撕纸</td><td>阿桉、纸角</td></tr>
+<tr><td>纸角</td><td>第 1 章</td><td>阿桉围裙口袋里的缺角纸片</td><td>阿桉、半字旧纸</td></tr>
+<tr><td>木匣</td><td>第 2 章</td><td>寄存处里装旧条目的木匣</td><td>小满、名册</td></tr>
+<tr><td>手套</td><td>第 1 章</td><td>钟叔常年戴着，用来藏住铜楔</td><td>钟叔、铜楔</td></tr>
+<tr><td>铜楔</td><td>第 3 章</td><td>卡住钟摆的铜块，钟叔所放</td><td>钟叔、旧钟楼</td></tr>
+<tr><td>布包</td><td>第 2 章</td><td>小满随身携带的布包</td><td>小满</td></tr>
+<tr><td>名单</td><td>第 2 章</td><td>寄存处门口的排队名单</td><td>小满、名册</td></tr>
+<tr><td>账册</td><td>第 1 章</td><td>每日换页，每人每日只写一格</td><td>沈砚、东街、条目</td></tr>
+</tbody></table>
+<h2>四、术语（4）</h2>
+<table><tbody>
+<tr><td>名称</td><td>首见章</td><td>释义</td><td>关联条目</td></tr>
+<tr><td>条目</td><td>第 1 章</td><td>账册上的一行记录，写一须划一</td><td>账册、划掉</td></tr>
+<tr><td>划掉</td><td>第 1 章</td><td>删除条目的动作，不可在己册恢复</td><td>条目、抄写</td></tr>
+<tr><td>抄写</td><td>第 1 章</td><td>在别人的账册里重抄已划条目一次</td><td>阿桉、纸角</td></tr>
+<tr><td>名册</td><td>第 2 章</td><td>寄存处学徒名册，名字在上便不能离开</td><td>小满、寄存处、木匣</td></tr>
+</tbody></table>
+<h2>五、与设定集的差异说明</h2>
+<p>本附录中的「地名—场所特征」与 `01_世界观设定集.md` 第二节一致；「条目／划掉／抄写」三条术语的释义是对 H1、H4 的复述，不构成新规则。凡本附录未列出的设定细节，以设定集与原始设定包为准。</p>
+</section>
+
+
+      <footer class="page-foot">
+        《账本城》· 第 2 课 · AI 小说与 IP 设定集创作 · 课堂虚构作品<br/>
+        正文、设定集、人物小传、连续性校对表与索引同在一套制作包内；本页为单文件阅读版，零外部依赖。
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  const pages = document.querySelectorAll('section.page');
+  const navBtns = document.querySelectorAll('nav button');
+
+  function show(id) {
+    let hit = false;
+    pages.forEach(p => {
+      const on = p.id === id;
+      p.classList.toggle('active', on);
+      if (on) hit = true;
+    });
+    if (!hit) return;
+    navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  navBtns.forEach(b => b.addEventListener('click', () => show(b.dataset.target)));
+
+  const input = document.getElementById('idxSearch');
+  const clearBtn = document.getElementById('clearBtn');
+  const appendix = document.getElementById('appendix');
+
+  function stripMarks() {
+    if (!appendix) return;
+    appendix.querySelectorAll('mark').forEach(m => {
+      const t = document.createTextNode(m.textContent);
+      m.parentNode.replaceChild(t, m);
+    });
+  }
+
+  function highlight(q) {
+    if (!appendix || !q) return null;
+    let first = null;
+    appendix.querySelectorAll('tbody tr').forEach(tr => {
+      tr.querySelectorAll('td').forEach(td => {
+        if (td.textContent.indexOf(q) === -1) return;
+        if (!first) first = tr;
+        td.innerHTML = td.innerHTML.split(q).join('<mark>' + q + '</mark>');
+      });
+    });
+    return first;
+  }
+
+  function runSearch() {
+    const q = input.value.trim();
+    clearBtn.style.display = q ? 'block' : 'none';
+    stripMarks();
+    if (!q) return;
+    show('appendix');
+    const row = highlight(q);
+    setTimeout(() => {
+      if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
+  }
+
+  input.addEventListener('input', runSearch);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+  clearBtn.addEventListener('click', () => { input.value = ''; stripMarks(); clearBtn.style.display = 'none'; input.focus(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { input.value = ''; stripMarks(); clearBtn.style.display = 'none'; }
+  });
+})();
+</script>
+</body>
+</html>
