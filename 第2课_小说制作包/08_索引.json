@@ -1,0 +1,26 @@
+﻿{
+  "items": [
+    { "name": "沈砚", "category": "人物", "first_chapter": 1, "gloss": "东街记录员，负责给公共账册换页", "related": ["铜尺", "东街", "账册"] },
+    { "name": "阿桉", "category": "人物", "first_chapter": 1, "gloss": "纸街抄写员，能重抄被划掉的条目", "related": ["纸街", "纸角", "抄写"] },
+    { "name": "钟叔", "category": "人物", "first_chapter": 1, "gloss": "旧钟楼看守，从不解释钟为什么停", "related": ["旧钟楼", "手套", "铜楔"] },
+    { "name": "小满", "category": "人物", "first_chapter": 2, "gloss": "寄存处学徒，只在周五出现", "related": ["寄存处", "木匣", "布包"] },
+    { "name": "东街", "category": "地点", "first_chapter": 1, "gloss": "长桌连成一排，人们在此写条目", "related": ["沈砚", "账册"] },
+    { "name": "钟楼街", "category": "地点", "first_chapter": 1, "gloss": "安静的街，地面有钟摆投下的长影", "related": ["旧钟楼", "钟叔"] },
+    { "name": "纸街", "category": "地点", "first_chapter": 1, "gloss": "抄写员聚集处，墙上是层层旧纸", "related": ["阿桉", "抄写"] },
+    { "name": "寄存处", "category": "地点", "first_chapter": 2, "gloss": "木门小窗，只在周五傍晚开放", "related": ["小满", "木匣", "名册"] },
+    { "name": "旧钟楼", "category": "地点", "first_chapter": 1, "gloss": "指针停在傍晚刻度，钟只响一次", "related": ["钟叔", "铜楔"] },
+    { "name": "铜尺", "category": "道具", "first_chapter": 1, "gloss": "沈砚压纸的工具，随身不离", "related": ["沈砚", "账册"] },
+    { "name": "半字旧纸", "category": "道具", "first_chapter": 1, "gloss": "只剩半个「桉」字的撕纸", "related": ["阿桉", "纸角"] },
+    { "name": "纸角", "category": "道具", "first_chapter": 1, "gloss": "阿桉围裙口袋里的缺角纸片", "related": ["阿桉", "半字旧纸"] },
+    { "name": "木匣", "category": "道具", "first_chapter": 2, "gloss": "寄存处里装旧条目的木匣", "related": ["小满", "名册"] },
+    { "name": "手套", "category": "道具", "first_chapter": 1, "gloss": "钟叔常年戴着，用来藏住铜楔", "related": ["钟叔", "铜楔"] },
+    { "name": "铜楔", "category": "道具", "first_chapter": 3, "gloss": "卡住钟摆的铜块，钟叔所放", "related": ["钟叔", "旧钟楼"] },
+    { "name": "布包", "category": "道具", "first_chapter": 2, "gloss": "小满随身携带的布包", "related": ["小满"] },
+    { "name": "名单", "category": "道具", "first_chapter": 2, "gloss": "寄存处门口的排队名单", "related": ["小满", "名册"] },
+    { "name": "账册", "category": "道具", "first_chapter": 1, "gloss": "每日换页，每人每日只写一格", "related": ["沈砚", "东街", "条目"] },
+    { "name": "条目", "category": "术语", "first_chapter": 1, "gloss": "账册上的一行记录，写一须划一", "related": ["账册", "划掉"] },
+    { "name": "划掉", "category": "术语", "first_chapter": 1, "gloss": "删除条目的动作，不可在己册恢复", "related": ["条目", "抄写"] },
+    { "name": "抄写", "category": "术语", "first_chapter": 1, "gloss": "在别人的账册里重抄已划条目一次", "related": ["阿桉", "纸角"] },
+    { "name": "名册", "category": "术语", "first_chapter": 2, "gloss": "寄存处学徒名册，名字在上便不能离开", "related": ["小满", "寄存处", "木匣"] }
+  ]
+}
